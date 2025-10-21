@@ -1,16 +1,40 @@
 import userModel from "../models/userModel.js";
 import validator from "validator";
-import bycript from "bcrypt";
-import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const createToken = (id) => {
-
-    return jwt.sign({id}, process.env.JWT_SECRET);
-    
-}
+  return jwt.sign({ id }, process.env.JWT_SECRET);
+};
 
 // Route for user login
-const loginUser = async (req, res) => {};
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({ success: false, msg: "User dosen't exists" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      const token = createToken(user.id);
+      res.json({
+        success: true,
+        token: token,
+      });
+    } else {
+      res.json({ success: false, msg: "Invalid credentials" });
+    }
+  } catch (error) {
+    onsole.log(error);
+    res.json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
 
 // Route for user register
 const registerUser = async (req, res) => {
@@ -35,29 +59,28 @@ const registerUser = async (req, res) => {
 
     //Hash Password
     const saltRounds = 10;
-    const salt = await bycript.genSaltSync(saltRounds);
-    const hashedPasswrod = await bycript.hashSync(password, salt);
+    const salt = await bcrypt.genSaltSync(saltRounds);
+    const hashedPasswrod = await bcrypt.hashSync(password, salt);
 
     const newUser = new userModel({
-        name: name,
-        password: hashedPasswrod,
-        email: email
+      name: name,
+      password: hashedPasswrod,
+      email: email,
     });
     const user = await newUser.save();
 
     const token = createToken(user._id);
 
     return res.json({
-        success: true,
-        token: token
-      });
-
+      success: true,
+      token: token,
+    });
   } catch (error) {
     console.log(error);
     return res.json({
-        success: false,
-        msg: error.message,
-      });
+      success: false,
+      msg: error.message,
+    });
   }
 };
 
