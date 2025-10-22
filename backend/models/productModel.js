@@ -1,4 +1,4 @@
-import mongoose, { mongo, Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import { type } from "os";
 
 const productSchema = new mongoose.Schema({
@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
     createdAt: {type: Number, required: true}
 });
 
-const productModel = mongoose.models.product || Mongoose.model('product', productSchema);
+const productModel = mongoose.models.product || mongoose.model('product', productSchema);
 
 
 export default productModel;
