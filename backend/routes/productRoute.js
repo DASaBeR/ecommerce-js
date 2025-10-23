@@ -7,6 +7,7 @@ import {
   remove,
 } from "../controllers/productController.js";
 import upload from "../middleware/multer.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const productRouter = express.Router();
 
@@ -14,6 +15,7 @@ productRouter.get("/read", read);
 productRouter.get("/details/:id", details);
 productRouter.post(
   "/create",
+  adminAuth,
   upload.fields([
     { name: "image1", maxCount: 1 },
     { name: "image2", maxCount: 1 },
@@ -23,6 +25,6 @@ productRouter.post(
   create
 );
 productRouter.post("/update", update);
-productRouter.post("/remove/:id", remove);
+productRouter.post("/remove/:id", adminAuth, remove);
 
 export default productRouter;
