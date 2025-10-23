@@ -7,7 +7,7 @@ const read = async (req, res) => {
 
 
   } catch (error) {
-    console.error("Delete product error:", error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -20,7 +20,7 @@ const addItem = async (req, res) => {
 
 
   } catch (error) {
-    console.error("Delete product error:", error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -35,7 +35,7 @@ const update = async (req, res) => {
 
 
   } catch (error) {
-    console.error("Delete product error:", error);
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
